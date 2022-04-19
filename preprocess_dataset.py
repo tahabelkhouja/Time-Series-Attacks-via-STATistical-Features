@@ -5,7 +5,6 @@ Created on Thu Aug  8 12:54:10 2019
 @author: BkTaha
 """
 import os
-import json
 import numpy as np
 import pickle as pkl
 import pandas as pd
@@ -121,7 +120,7 @@ def load_mv_ucr_data(dataset_name, parent_file):
 
     
 def main(argv):
-    dataset_zip_directory = "UCRDatasets/{}".format(FLAGS.dataset_name)
+    dataset_zip_directory = "Datasets/{}".format(FLAGS.dataset_name)
     try:
         os.makedirs("Dataset")
     except FileExistsError:
@@ -132,20 +131,11 @@ def main(argv):
         X_train, y_train, X_test, y_test = load_ucr_data(FLAGS.dataset_name, dataset_zip_directory)
         
     pkl.dump([X_train, y_train, X_test, y_test], open("Dataset/"+FLAGS.dataset_name+".pkl", "wb")) 
-    with open('datasets_parameters.json') as jf:
-        info = json.load(jf)
-    info[FLAGS.dataset_name]={
-            "path": "Dataset/"+FLAGS.dataset_name+".pkl",
-        	 "SEG_SIZE": X_train.shape[2], 
-        	 "CHANNEL_NB": X_train.shape[3],
-        	 "CLASS_NB": len(np.unique(y_train))
-        }
-    with open('datasets_parameters.json', 'w') as jf:
-        json.dump(info, jf, indent=2)
-        
+    
 if __name__=="__main__":
     flags.DEFINE_string('dataset_name', 'SyntheticControl ', 'Dataset name')
-    flags.DEFINE_boolean('multivariate', False, 'Dataset Is multivariate')
+    flags.DEFINE_boolean('multivariate', None, 'Dataset Is multivariate')
+    flags.mark_flags_as_required(['multivariate'])
     app.run(main)   
     
     

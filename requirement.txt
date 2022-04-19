@@ -1,4 +1,6 @@
 matplotlib
 numpy
 sklearn
+scipy==1.5.0
 tensorflow==2.1.0-gpu
+tensorflow_probability==0.11.1

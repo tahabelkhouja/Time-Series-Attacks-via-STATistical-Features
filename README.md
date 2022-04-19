@@ -9,22 +9,28 @@ By default, data is stored in `experim_path_{dataset_name}`. Directory can be ch
 
 
 ## Obtain datasets
-- The dataset can be obtained as .zip file from "[The UCR Time Series Classification Repository](http://www.timeseriesclassification.com/dataset.php)".
-- Download the .zip file and extract it it in `UCRDatasets/{dataset_name}` directory.
-- Run the following command for pre-processing a given dataset while specifying if it is multivariate, for example, on SyntheticControl dataset
+- The dataset can be obtained as .zip file from "[The UCR Time Series Classification Repository](http://www.timeseriesclassification.com/dataset.php)", "[The UCI Machine Learning Repository](http://archive.ics.uci.edu/ml/datasets/smartphone-based+recognition+of+human+activities+and+postural+transitions)", and "[The Activity Recognition using Cell Phone Accelerometers Repository](https://www.cis.fordham.edu/wisdm/dataset.php)".
+- Download the .zip file and extract it it in `Datasets/{dataset_name}` directory.
+- Run the following command for pre-processing a given dataset from The UCR Repository. For example, to extract SyntheticControl dataset
 ```
-python preprocess_dataset.py --dataset_name=SyntheticControl --multivariate=False
+python preprocess_dataset.py --dataset_name=SyntheticControl 
 ```
-The results will be stored in `Dataset` directory. 
+The results will be stored in `Dataset` directory in a "[pickle]"(https://docs.python.org/3/library/pickle.html) format containing the training-testing examples with their corresponding labels.
 
 ## Run
 - Example  training run
 ```
-python tsa_stat.py --dataset_name=SyntheticControl 
+python train.py --dataset_name=SyntheticControl --window_size 60 --channel_dim 1 --class_nb 6
 ```
 
-- Example testing run
+- Example TSA-STAT adversarial attack run
 ```
-python test_tsa_stat.py --dataset_name=SyntheticControl 
+python tsa_stat_adversarial.py --dataset_name=SyntheticControl --window_size 60 --channel_dim 1 --class_nb 6 -t 0
 ```
+The adversarial attack will be stored in a "[pickle]"(https://docs.python.org/3/library/pickle.html) file "TSASTAT_Attack.pkl"
 
+- Example TSA-STAT certification run
+```
+python certify_model.py --dataset_name=SyntheticControl --window_size 60 --channel_dim 1 --class_nb 6 
+```
+The certification result  will be stored in a "[pickle]"(https://docs.python.org/3/library/pickle.html) file "Certificates.pkl"
