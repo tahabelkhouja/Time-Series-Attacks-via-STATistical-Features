@@ -1,3 +1,5 @@
+import sys
+
 import numpy as np
 import tensorflow as tf
 import utils_ as u
@@ -176,21 +178,12 @@ class targetModel_cnn():
                 ft_set: Index of statistical features used according to utils_.m_features
                 orig_X_ft: Values of the statiscal feature of a reference input
             """
-            orig_X_ft, BA_orig = orig_X_ft
             _, stats_ft = u.m_features(X)
-            stats_ft, BA = stats_ft
             c_factor = tf.ones(stats_ft.shape[0], dtype=tf.float64)
-            if ft_set[0]==-1:
-                loss_ =  tf.norm((BA- BA_orig), ord=2)
-            else:
-                loss_ = tf.multiply(c_factor[ft_set[0]], tf.norm((stats_ft[ft_set[0]] - orig_X_ft[ft_set[0]]), ord=np.inf))
+            loss_ = tf.multiply(c_factor[ft_set[0]], tf.norm((stats_ft[ft_set[0]] - orig_X_ft[ft_set[0]]), ord=np.inf))
             for k in ft_set[1:]:
-                if k==-1:
-                    loss_k =  tf.norm((BA- BA_orig), ord=2)
-                    loss_ = tf.add(loss_, loss_k)
-                else:
-                    loss_k = tf.multiply(c_factor[k], tf.norm((stats_ft[k] - orig_X_ft[k]), ord=np.inf))
-                    loss_ = tf.add(loss_, loss_k)
+                loss_k = tf.multiply(c_factor[k], tf.norm((stats_ft[k] - orig_X_ft[k]), ord=np.inf))
+                loss_ = tf.add(loss_, loss_k)
             return loss_
 
         
@@ -205,28 +198,25 @@ class targetModel_cnn():
         min_loss = np.inf
         ep = 0
         
-        mask = np.zeros(a.shape)
-        for ch in channel:
-            mask[:,:,ch] += 1
         while ( ep <= max_iter):
             ep += 1
             eta = lr_decay(ep)
             with tf.GradientTape() as tape: 
                 tape.watch(a)
-                loss1 = self.adv_loss_fn(TF(X,a, deg=deg, clip=clip, channel=channel, mask=mask), t, rho)
-                loss2 = loss_fct(TF(X,a, deg=deg, clip=clip, channel=channel, mask=mask), **proj_fn_dict)
+                loss1 = self.adv_loss_fn(TF(X,a, deg=deg, clip=clip), t, rho)
+                loss2 = loss_fct(TF(X,a, deg=deg, clip=clip), **proj_fn_dict)
                 loss_ = tf.add(loss1, tf.multiply(lbda, loss2))
                 if loss_ <= c:
-                    return TF(X, a, deg=deg, clip=clip, channel=channel, mask=mask), a, [loss1, loss2]
+                    return TF(X, a, deg=deg, clip=clip), a, [loss1, loss2]
                 if loss_ < min_loss:
                     min_loss = loss_
                     min_a = tf.identity(a)
                 grad = tape.gradient(loss_, a)
                 if (ep%100==0) and verbose: print("Epoch{}:\nLoss1: {:.4f}\nLoss2: {:.4f}\nLoss: {:.4f}\n---".format(ep,loss1, loss2, loss_))
                 a = a - eta * grad
-        return TF(X, min_a, deg=deg, clip=clip, channel=channel, mask=mask), min_a,\
-                [self.adv_loss_fn(TF(X,min_a, deg=deg, clip=clip, channel=channel, mask=mask), t, rho),\
-                 loss_fct(TF(X, min_a, deg=deg, clip=clip, channel=channel, mask=mask), **proj_fn_dict)]
+        return TF(X, min_a, deg=deg, clip=clip), min_a,\
+                [self.adv_loss_fn(TF(X,min_a, deg=deg, clip=clip), t, rho),\
+                 loss_fct(TF(X, min_a, deg=deg, clip=clip), **proj_fn_dict)]
     
     
 

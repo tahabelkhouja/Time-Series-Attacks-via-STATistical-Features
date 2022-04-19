@@ -1,3 +1,8 @@
+import sys
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = "3"
+os.environ["CUDA_DEVICE_ORDER"]="PCI_BUS_ID"   
+os.environ["CUDA_VISIBLE_DEVICES"]="0"
 import pickle as pkl
 
 from TargetCnn import targetModel_cnn
@@ -22,9 +27,8 @@ def main(argv):
         sys.stdout.flush()
         x = X_test[sample_index:sample_index+1]
         orig_pred = cnn_model.predict(x).numpy()[0]
-        _, _, L = certifiedBound(cnn_model, x, FLAGS.class_nb, FLAGS.mu_p, FLAGS.sigma, FALGS.iter_max)
-        cetif_vect.extend(L)
-
+        _, _, L = certifiedBound(cnn_model, x, FLAGS.class_nb, FLAGS.mu_p, FLAGS.sigma, FLAGS.iter_max)
+        cetif_vect.append(L)
     pkl.dump(cetif_vect, open(f"{cnn_model.name}_Certificates_{FLAGS.mu_n}_{FLAGS.sigma}.pkl", "wb"))
 
 

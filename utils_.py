@@ -20,7 +20,6 @@ def m_features(s):
 
     """
     channel_nb = s.shape[-1]
-    assert channel_nb==4 or channel_nb==3, "This is designed for sensors exclusively"
     l = s.shape[2]
     #Stack init using channel 0
     
