@@ -15,7 +15,7 @@ By default, data is stored in `experim_path_{dataset_name}`. Directory can be ch
 ```
 python preprocess_dataset.py --dataset_name=SyntheticControl 
 ```
-The results will be stored in `Dataset` directory in a "[pickle](https://docs.python.org/3/library/pickle.html)" format containing the training-testing examples with their corresponding labels.
+The results will be stored in `Dataset` directory in [pickle](https://docs.python.org/3/library/pickle.html) format containing the training-testing examples with their corresponding labels.
 
 ## Run
 - Example  training run
@@ -27,10 +27,10 @@ python train.py --dataset_name=SyntheticControl --window_size 60 --channel_dim 1
 ```
 python tsa_stat_adversarial.py --dataset_name=SyntheticControl --window_size 60 --channel_dim 1 --class_nb 6 -t 0
 ```
-The adversarial attack will be stored in a "[pickle](https://docs.python.org/3/library/pickle.html)" file "TSASTAT_Attack.pkl"
+The adversarial attack will be stored in [pickle](https://docs.python.org/3/library/pickle.html) file "TSASTAT_Attack.pkl"
 
 - Example TSA-STAT certification run
 ```
 python certify_model.py --dataset_name=SyntheticControl --window_size 60 --channel_dim 1 --class_nb 6 
 ```
-The certification result  will be stored in a "[pickle](https://docs.python.org/3/library/pickle.html)" file "Certificates.pkl"
+The certification result  will be stored in [pickle](https://docs.python.org/3/library/pickle.html) file "Certificates.pkl"
