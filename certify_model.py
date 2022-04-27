@@ -22,14 +22,13 @@ def main(argv):
 
     cetif_vect = []
     for sample_index in range(X_test.shape[0]):
-        sys.stdout.write("\r{}: Iteration {}/{} . . . \n".format(cnn_model.name, 
+        sys.stdout.write("\r{}: Iteration {}/{} . . .".format(cnn_model.name, 
                                            sample_index+1, X_test.shape[0]))
         sys.stdout.flush()
         x = X_test[sample_index:sample_index+1]
-        orig_pred = cnn_model.predict(x).numpy()[0]
         _, _, L = certifiedBound(cnn_model, x, FLAGS.class_nb, FLAGS.mu_p, FLAGS.sigma, FLAGS.iter_max)
         cetif_vect.append(L)
-    pkl.dump(cetif_vect, open(f"{cnn_model.name}_Certificates_{FLAGS.mu_n}_{FLAGS.sigma}.pkl", "wb"))
+    pkl.dump(cetif_vect, open(f"{cnn_model.name}_Certificates_{FLAGS.mu_p}_{FLAGS.sigma}.pkl", "wb"))
 
 
 if __name__=="__main__":    
